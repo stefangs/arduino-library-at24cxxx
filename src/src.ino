@@ -2,7 +2,7 @@
 
 #include "at24c256.h"
 
-#define BASE (1024L * 60)
+#define BASE (1024L * 30)
 
 AT24C256 eprom(0x50);     // Assumes an eprom is connected on this address
 AT24C256 badEprom(0x58);  // Assumes an eprom is NOT connected on this address
@@ -66,6 +66,18 @@ void setup() {
 
   // Read the size of the eeprom
   Serial.println(eprom.length());
+
+    // Write and read a long byte buffer (> 32 which is TwoWire's internal buffer size and longer than 64)
+  uint8_t out2[80] = "Writing a really long message, testing some of several buffer limits on the way", in2[80];
+  Serial.print(eprom.writeBuffer(BASE, out2, 80));
+  Serial.print(" bytes written, last error on write: ");
+  Serial.println(eprom.getLastError());  
+  Serial.print(eprom.readBuffer(BASE, in2, 80));
+  Serial.print(" bytes read, last error on read: ");
+  Serial.println(eprom.getLastError()); 
+  in2[79] = '\0';
+  Serial.println((char*)in2);
+
   
 }
 

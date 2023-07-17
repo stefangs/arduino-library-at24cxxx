@@ -42,15 +42,14 @@ AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
 	twoWire->beginTransmission(i2cAddress);
 	twoWire->write((uint8_t)((address >> 8) & 0xFF));
 	twoWire->write((uint8_t)(address & 0xFF));
-  for (int written = 0; written < len; written++) {
+  int written = 0;
+  for (written = 0; written < len; written++) {
     // Not using twoWire's built in buffer write since it hides errors from write.
     if (twoWire->write(data[written]) != 1) {
       // An error here (not 1) indicates that we have reached the end of the 
       // internal write buffer, so no more data can be written.
-      // It is no point writing parts of a buffer, so we leave here and indicate
-      // the error
-      lastError = 1;
-      return 0;
+      // Stop filling the buffer, write what we got and return the number written
+      break;
     }
   }
 	lastError = twoWire->endTransmission();
@@ -60,7 +59,7 @@ AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   // do through the TwoWire-API, so instead we just do a hard wait to ensure
   // that the chip is availbale again before we finish the operation.
   delay(writeDelay); 
-  return lastError == 0 ? len : 0;
+  return lastError == 0 ? written : 0;
 }
 
 int
@@ -68,21 +67,30 @@ AT24Cxxx::writeBuffer(uint16_t address, const uint8_t* data, size_t len){
   const uint8_t* dataToWrite = data;
   size_t lenRemaining = len;
   uint16_t nextAddress = address;
-  int written = 0;
+  int totalWritten = 0;
   do {
-    // Since page write to the AT24Cxxx chips on works within the pages
+    // Since page write to the AT24Cxxx chips only works within the pages
     // we must make sure to split our writes on page borders.
     // Therefore we start by finding out how far it is to the next page
     // border and only write as many bytes in one write operation.
     uint16_t locationOnPage = nextAddress % pageSize;
     size_t maxBytesToWrite = pageSize - locationOnPage;
     size_t bytesToWrite = min(maxBytesToWrite, lenRemaining);
-    written += rawWriteBuffer(nextAddress, dataToWrite, bytesToWrite);
-    lenRemaining -= bytesToWrite;
-    dataToWrite += bytesToWrite;
-    nextAddress += bytesToWrite;
+    // Note, due to other internal buffer sizes in the TwoWire libraries
+    // we may not be able to write the whole message. Therefore we keep track
+    // on how many bytes were actually written and use that number when
+    // calculating what to write next
+    size_t written = rawWriteBuffer(nextAddress, dataToWrite, bytesToWrite);
+    if (getLastError() != 0) {
+      // If we got a hard error from the TwoWire bus, there is no point to continue
+      break;
+    }
+    totalWritten += written;
+    lenRemaining -= written;
+    dataToWrite += written;
+    nextAddress += written;
   } while (lenRemaining > 0);
-  return written;
+  return totalWritten;
 }
 
 int
