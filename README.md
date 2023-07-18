@@ -38,7 +38,7 @@ void setup() {
 All basic types, such as int, long, double can be read or written with the `put` and `get` methods. You just specify the memory address and the variable to read or write:
 ```C++
 int foo = 42, foo_in;
-eprom.put(0, foo);                      // Write the integer value 42 to address 0
-Serial.println(eprom.get(0, foo_in));   // Read the integer value at address 0 into variable foo_in
+eprom.put(0, foo);      // Write the integer value 42 to address 0
+eprom.get(0, foo_in);   // Read the integer value at address 0 into variable foo_in
 ```
 
