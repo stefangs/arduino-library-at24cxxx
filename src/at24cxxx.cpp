@@ -57,7 +57,7 @@ AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   // to become available again for new operations. 
   // It is possible to poll the chip to ask if it is ready, but this is hard to
   // do through the TwoWire-API, so instead we just do a hard wait to ensure
-  // that the chip is availbale again before we finish the operation.
+  // that the chip is available again before we finish the operation.
   delay(writeDelay); 
   return lastError == 0 ? written : 0;
 }
