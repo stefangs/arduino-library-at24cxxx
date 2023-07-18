@@ -1,4 +1,7 @@
 
+#ifndef AT24CXXX_H
+#define AT24CXXX_H
+
 #include "Wire.h"
 
 class AT24Cxxx {
@@ -41,3 +44,5 @@ class AT24Cxxx {
     uint8_t pageSize;
     TwoWire* twoWire;
 };
+
+#endif
