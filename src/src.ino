@@ -49,7 +49,7 @@ void setup() {
 
    // Error handling on write, no error
   eprom.write(BASE, 77);
-  Serial.print("last error on write: ");
+  Serial.print("last status on write: ");
   // 0 means no error
   Serial.println(badEprom.getLastError());
 
@@ -67,7 +67,8 @@ void setup() {
   // Read the size of the eeprom
   Serial.println(eprom.length());
 
-    // Write and read a long byte buffer (> 32 which is TwoWire's internal buffer size and longer than 64)
+    // Write and read a long byte buffer, >32 which is TwoWire's internal buffer size and 
+    // >64 which is the at24c256 page size)
   uint8_t out2[80] = "Writing a really long message, testing some of several buffer limits on the way", in2[80];
   Serial.print(eprom.writeBuffer(BASE, out2, 80));
   Serial.print(" bytes written, last error on write: ");
