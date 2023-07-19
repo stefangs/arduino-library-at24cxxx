@@ -10,7 +10,7 @@ This is an Arduino library for using the AT24C-series serial persistant memory c
 
 The library interface is drop in compatible with the Arduino built in EEPROM API, so code written for the internal EEPROM will work with this library without modification.
 
-The libray has the following features:
+The library has the following features:
 * Uses the page write feature of the AT24C chips which is up to 64 times faster than doing single byte writes and reduces wear on the memory cells.
 * Keeps track of page sizes for the different chips and adjusts writes to page borders
 * Handles the Write Cycle Time of the chips, avoiding the risk of trying to access the chip while it is busy processing an earlier write
