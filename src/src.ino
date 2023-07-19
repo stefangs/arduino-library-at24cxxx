@@ -2,9 +2,8 @@
  * This sketch shows examples on how to use all the features of this library
  * 
  * It can also be used as a test program to verify that you have your eprom configured
- * propery to your Arduino as it prons out the results so you can see if everything works
+ * propery to your Arduino as it prints out the results so you can see if everything works
  */
-
 
 #include "at24c256.h"
 
