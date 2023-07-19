@@ -83,6 +83,17 @@ void setup() {
   uint8_t byte = eprom0.read(0);
 }
 ```
+## Error handling
+Since this is an external memory chip that is connected through the I2C-bus, there is always a risk that the communication failes, due to physical errors in the setup. You can always check if the latest operation succeeded via the `getLastError()` method:
+```C++
+uint8_t data = eprom.read(0);
+if (eprom.getLastError() != 0) {
+  Serial.print("Error reading from eeprom");
+} 
+```
+Value 0 means no error, 1 means internal buffer overflow, 2 means NACK when addressing the chip and this is the error you will get if a chip is not connected to the specified address.
+
+It is good practice to check for error at least once in setup so you get early feedback if there is a bad connection to the chip.
 ## Specifying TwoWire interface
 Some Arduino boards have multiple I2C busses. The library allows you to specify which TwoWire bus to use for each chip object:
 ```C++
