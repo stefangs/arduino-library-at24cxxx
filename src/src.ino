@@ -1,22 +1,17 @@
 
-
 #include "at24c256.h"
 
 #define BASE (1024L * 30)
 
 AT24C256 eprom(0x50);     // Assumes an eprom is connected on this address
 AT24C256 badEprom(0x58);  // Assumes an eprom is NOT connected on this address
-char buffer[10];
-
-struct Point {
-  int x;
-  int y;
-};
 
 void setup() {
   Serial.begin(115200);
-  Wire.begin();
   Serial.println("Starting up");
+
+  // Initialize the i2c library
+  Wire.begin();
 
   // Write and read an integer
   int foo = 42, foo_in;
@@ -27,10 +22,15 @@ void setup() {
   double pi = 3.141593, pi_in;
   eprom.put(BASE, pi);
   eprom.get(BASE, pi_in);
-  dtostrf(pi_in, 9, 6, buffer);
+  char buffer[10];
+  dtostrf(pi_in, 9, 6, buffer); // Converts a double to a string
   Serial.println(buffer);
 
   // Write and read a struct
+  struct Point {
+    int x;
+    int y;
+  };
   Point point = {17, 42}, point_in;
   eprom.put(BASE, point);
   eprom.get(BASE, point_in);
@@ -47,19 +47,19 @@ void setup() {
   eprom.readBuffer(BASE, in, 15);
   Serial.println((char*)in);
 
-   // Error handling on write, no error
+  // Error handling on write, no error
   eprom.write(BASE, 77);
   Serial.print("last status on write: ");
   // 0 means no error
-  Serial.println(badEprom.getLastError());
+  Serial.println(eprom.getLastError());
 
- // Error handling on write, using a eprom address without eprom
+  // Error handling on write, using a eprom address without eprom
   badEprom.write(BASE, 77);
   Serial.print("last error on write: ");
   // 2 usually means that no device is attached to the address
   Serial.println(badEprom.getLastError());  
 
- // Error handling on read, using a eprom address without eprom
+  // Error handling on read, using a eprom address without eprom
   Serial.println(badEprom.read(BASE));
   Serial.print("last error on read: ");
   Serial.println(badEprom.getLastError());  
@@ -78,8 +78,6 @@ void setup() {
   Serial.println(eprom.getLastError()); 
   in2[79] = '\0';
   Serial.println((char*)in2);
-
-  
 }
 
 void loop() {
