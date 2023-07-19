@@ -21,11 +21,11 @@ The library has the following features:
 # Examples
 
 ## Setting up
-You need to include the .h file for the chip type you are using and create a chip-object with the address it is configured at. Since the I2C-bus is used, you also have to start the Wire-interface:
+You need to include the .h file for the chip type you are using and create a chip-object with the address it is configured at. There are constants defined for all eight possible addresses of the chip, AT24C_ADDRESS_0 - AT24C_ADDRESS_7. Since the I2C-bus is used, you also have to start the Wire-interface:
 ```C++
 #include "at24c256.h"
 
-AT24C256 eprom(0x50);
+AT24C256 eprom(AT24C_ADDRESS_0);
 
 void setup() {
   Wire.begin();
@@ -37,8 +37,9 @@ void setup() {
 ## Reading and writing basic types
 All basic types, such as int, long, double can be read or written with the `put` and `get` methods. You just specify the memory address and the variable to read or write:
 ```C++
-int foo = 42, foo_in;
+int foo = 42;
 eprom.put(0, foo);      // Write the integer value 42 to address 0
+int foo_in;
 eprom.get(0, foo_in);   // Read the integer value at address 0 into variable foo_in
 ```
 ## Reading and writing complex types
@@ -49,15 +50,17 @@ struct Coordinate {
   int y;
 };
 
-Coordinate point = {17, 42}, point_in;
+Coordinate point = {17, 42};
 eprom.put(0, point);     // Write the struct point to address 0
+Coordinate point_in;
 eprom.get(0, point_in);  // Read the values of the struct point_in from address 0
 ```
 ## Reading and writing byte buffers
 Byte buffers of any length (that fits the memory) can be read and written. The library handles limitations in the underlying I2C libraris so the reads and writes are partitioned in small enough chunks:
 ```C++
-uint8_t out[15] = "Test of buffer", in[15];
+uint8_t out[15] = "Test of buffer";
 eprom.writeBuffer(0, out, 15);
+uint8_t in[15];
 eprom.readBuffer(0, in, 15);
 ```
 ## Reading raw bytes
@@ -73,9 +76,9 @@ The libray allows you to create multiple chips (also of different types). You ju
 #include "at24c256.h"
 #include "at24c02.h"
 
-AT24C256 eprom0(0x50);
-AT24C256 eprom1(0x51);
-AT24C02 eprom2(0x52);
+AT24C256 eprom0(AT24C_ADDRESS_0);
+AT24C256 eprom1(AT24C_ADDRESS_1);
+AT24C02 eprom2(AT24C_ADDRESS_2);
 
 void setup() {
   Wire.begin();
@@ -102,7 +105,7 @@ Some Arduino boards have multiple I2C busses. The library allows you to specify 
 AT24C256 eprom0(0x50, Wire);
 ```
 ## Specifying Write Cycle Time
-The library waits for the chip to process a write (write cycle time). The default time is 6 mS, which with some margin covers the standard 5 mS specified for the cips. However some old versions of AT24C256A may have up to 20 mS write cycle time, and in that case you can specify a higher time for a chip:
+The library waits for the chip to process a write (write cycle time). The default time is 6 mS, which with some margin covers the standard 5 mS specified for the chips. However some old versions of AT24C256A may have up to 20 mS write cycle time, and in that case you can specify a higher time for a chip:
 ```C++
 #include "at24c256.h"
 
@@ -112,5 +115,5 @@ If your application is really time critical and you only write single bytes, you
 ## Getting the size of a chip
 To be compatible with the built in EEPROM library, this library can also return the size of the memory chip. This makes it possible for your code automatically to adapt to different chip types:
 ```C++
-uint16_t size = eprom.length());
+int size = eprom.length());
 ```
