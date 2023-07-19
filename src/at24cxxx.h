@@ -4,6 +4,15 @@
 
 #include "Wire.h"
 
+#define AT24C_ADDRESS_0 (0x50)
+#define AT24C_ADDRESS_1 (0x51)
+#define AT24C_ADDRESS_2 (0x52)
+#define AT24C_ADDRESS_3 (0x53)
+#define AT24C_ADDRESS_4 (0x54)
+#define AT24C_ADDRESS_5 (0x55)
+#define AT24C_ADDRESS_6 (0x56)
+#define AT24C_ADDRESS_7 (0x57)
+
 class AT24Cxxx {
 
   public:
