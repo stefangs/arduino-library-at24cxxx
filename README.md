@@ -23,7 +23,7 @@ The library has the following features:
 ## Setting up
 You need to include the .h file for the chip type you are using and create a chip-object with the address it is configured at. There are constants defined for all eight possible addresses of the chip, AT24C_ADDRESS_0 - AT24C_ADDRESS_7. Since the I2C-bus is used, you also have to start the Wire-interface:
 ```C++
-#include "at24c256.h"
+#include <at24c256.h>
 
 AT24C256 eprom(AT24C_ADDRESS_0);
 
@@ -73,8 +73,8 @@ uint8_t value = eprom.read(0);  // Reads the value of the byte at address 0
 ## Connecting multiple chips
 The libray allows you to create multiple chips (also of different types). You just have to create an object for each chip of the right type:
 ```C++
-#include "at24c256.h"
-#include "at24c02.h"
+#include <at24c256.h>
+#include <at24c02.h>
 
 AT24C256 eprom0(AT24C_ADDRESS_0);
 AT24C256 eprom1(AT24C_ADDRESS_1);
@@ -100,14 +100,14 @@ It is good practice to check for error at least once in setup so you get early f
 ## Specifying TwoWire interface
 Some Arduino boards have multiple I2C busses. The library allows you to specify which TwoWire bus to use for each chip object:
 ```C++
-#include "at24c256.h"
+#include <at24c256.h>
 
 AT24C256 eprom0(0x50, Wire);
 ```
 ## Specifying Write Cycle Time
 The library waits for the chip to process a write (write cycle time). The default time is 6 mS, which with some margin covers the standard 5 mS specified for the chips. However some old versions of AT24C256A may have up to 20 mS write cycle time, and in that case you can specify a higher time for a chip:
 ```C++
-#include "at24c256.h"
+#include <at24c256.h>
 
 AT24C256 eprom0(0x50, Wire, 20);
 ```
