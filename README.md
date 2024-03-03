@@ -102,18 +102,34 @@ Some Arduino boards have multiple I2C busses. The library allows you to specify 
 ```C++
 #include <at24c256.h>
 
-AT24C256 eprom0(0x50, Wire);
+AT24C256 eprom0(AT24C_ADDRESS_0, Wire);
 ```
 ## Specifying Write Cycle Time
 The library waits for the chip to process a write (write cycle time). The default time is 6 mS, which with some margin covers the standard 5 mS specified for the chips. However some old versions of AT24C256A may have up to 20 mS write cycle time, and in that case you can specify a higher time for a chip:
 ```C++
 #include <at24c256.h>
 
-AT24C256 eprom0(0x50, Wire, 20);
+AT24C256 eprom0(AT24C_ADDRESS_0, Wire, 20);
 ```
 If your application is really time critical and you only write single bytes, you can also set the write cycle time to 0 to avoid the internal wait. I that case you have to keep track on that your application does not try to access the chip too fast after a write operation.
 ## Getting the size of a chip
 To be compatible with the built in EEPROM library, this library can also return the size of the memory chip. This makes it possible for your code automatically to adapt to different chip types:
 ```C++
 int size = eprom.length());
+```
+## Limitations on chips
+Some of the at24c chips have limitations in how many i2c addresses are available for the chips:
+* AT24C04 has 4 addresses
+* AT24C08 has 2 addresses
+* AT24C16 has only 1 hardcoded address
+
+Because of this, AT24C04 and AT24C08 has their own address enums and the AT24C16 does not have an address parameter in the constructor.
+```C++
+#include <at24c04.h>
+#include <at24c08.h>
+#include <at24c16.h>
+
+AT24C04 eprom0(AT24C04_ADDRESS_1);
+AT24C08 eprom1(AT24C08_ADDRESS_1);
+AT24C16 eprom2();
 ```

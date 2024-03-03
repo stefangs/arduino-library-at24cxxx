@@ -44,14 +44,17 @@ class AT24Cxxx {
       return t;
     }
 
+  protected:
+    virtual void writeAddress(uint16_t address);
+    uint8_t i2cAddress;
+    TwoWire* twoWire;
+    
   private:
     int rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len);
     int size;
-    uint8_t i2cAddress;
     uint8_t writeDelay;
     uint8_t lastError;
     uint8_t pageSize;
-    TwoWire* twoWire;
 };
 
 #endif

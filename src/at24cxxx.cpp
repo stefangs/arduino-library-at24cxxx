@@ -36,12 +36,17 @@ AT24Cxxx::length() {
   return lastError;
  }
 
+void
+AT24Cxxx::writeAddress(uint16_t address){
+  twoWire->beginTransmission(i2cAddress);
+  twoWire->write((uint8_t)((address >> 8) & 0xFF));
+  twoWire->write((uint8_t)(address & 0xFF));
+}
+
 int
 AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   lastError = 0;
-	twoWire->beginTransmission(i2cAddress);
-	twoWire->write((uint8_t)((address >> 8) & 0xFF));
-	twoWire->write((uint8_t)(address & 0xFF));
+  writeAddress(address);
   int written = 0;
   for (written = 0; written < len; written++) {
     // Not using twoWire's built in buffer write since it hides errors from write.
@@ -107,9 +112,7 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
     // in one go, we will try to read as many as possible, but see from the
     // result how many were actually read, and make multiple reads until
     // we have all data.
-  	twoWire->beginTransmission(i2cAddress);
-  	twoWire->write((uint8_t)((nextAddress >> 8) & 0xFF));
-  	twoWire->write((uint8_t)(nextAddress & 0xFF));
+    writeAddress(nextAddress);
   	lastError = twoWire->endTransmission();
     if (lastError != 0) {
       // If we got a hard error from the TwoWire bus, there is no point to continue
