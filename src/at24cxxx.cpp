@@ -36,6 +36,10 @@ AT24Cxxx::length() {
   return lastError;
  }
 
+// Writes both the chip address and the memory address to the I2C bus.
+// Since the way this is done varies between the different chips, this
+// function is extracted as a virtual template method which can be overridden
+// by the different chips.
 void
 AT24Cxxx::writeAddress(uint16_t address){
   twoWire->beginTransmission(i2cAddress);
