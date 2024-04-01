@@ -10,7 +10,7 @@ class AT24C01 : public AT24Cxxx {
       AT24Cxxx(address, i2c, writeDelay, 128, 8) {}
 
   protected:
-    virtual void writeAddress(uint16_t address) {
+    virtual void writeAddress(uint16_t address) override {
       twoWire->beginTransmission(i2cAddress);
       twoWire->write((uint8_t)(address & 0xFF));
     }

@@ -17,7 +17,10 @@ class AT24C04 : public AT24Cxxx {
     }
 
   protected:
-    virtual void writeAddress(uint16_t address) {
+    virtual void writeAddress(uint16_t address) override {
+      // AT24C04 has 512 bytes, but only an 8-bit address parameter
+      // The 9th bit is sent in the lsb of the chip i2c address leaving
+      // only 2 bits (four addresses) to address chips.
       twoWire->beginTransmission((uint8_t)((i2cAddress & 0xFE) | ((address >> 8) & 0x1)));
       twoWire->write((uint8_t)(address & 0xFF));
     }
