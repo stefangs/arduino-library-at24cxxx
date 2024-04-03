@@ -123,7 +123,7 @@ Some of the at24c chips have limitations in how many i2c addresses are available
 * AT24C08 has 2 addresses
 * AT24C16 has only 1 hardcoded address
 
-Because of this, AT24C04 and AT24C08 has their own address enums and the AT24C16 does not have an address parameter in the constructor.
+Because of this, AT24C04 and AT24C08 have their own address enums and the AT24C16 does not have an address parameter in the constructor.
 ```C++
 #include <at24c04.h>
 #include <at24c08.h>
