@@ -5,6 +5,8 @@ This is an Arduino library for using the AT24C-series serial persistant memory c
 * AT24C04  - 512 bytes
 * AT24C08  - 1024 bytes
 * AT24C16  - 2048 bytes
+* AT24C32  - 4096 bytes
+* AT24C64  - 8192 bytes
 * AT24C128 - 16384 bytes
 * AT24C256 - 32768 bytes
 
