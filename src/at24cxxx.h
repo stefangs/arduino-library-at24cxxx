@@ -21,8 +21,8 @@ class AT24Cxxx {
     void write( int idx, uint8_t val);
     void update( int idx, uint8_t val);
     uint16_t length();
-    int writeBuffer(uint16_t address, const uint8_t* data, size_t len);
-    int readBuffer(uint16_t address, uint8_t* data, uint8_t len);
+    size_t writeBuffer(uint16_t address, const uint8_t* data, size_t len);
+    size_t readBuffer(uint16_t address, uint8_t* data, size_t len);
     /** 
      * Returns result from the last performed operation. 
      * The meaning of the values are:
@@ -50,7 +50,7 @@ class AT24Cxxx {
     TwoWire* twoWire;
     
   private:
-    int rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len);
+    size_t rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len);
     int size;
     uint8_t writeDelay;
     uint8_t lastError;

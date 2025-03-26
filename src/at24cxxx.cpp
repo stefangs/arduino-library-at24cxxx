@@ -47,11 +47,11 @@ AT24Cxxx::writeAddress(uint16_t address){
   twoWire->write((uint8_t)(address & 0xFF));
 }
 
-int
+size_t
 AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   lastError = 0;
   writeAddress(address);
-  int written = 0;
+  size_t written = 0;
   for (written = 0; written < len; written++) {
     // Not using twoWire's built in buffer write since it hides errors from write.
     if (twoWire->write(data[written]) != 1) {
@@ -71,12 +71,12 @@ AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   return lastError == 0 ? written : 0;
 }
 
-int
+size_t
 AT24Cxxx::writeBuffer(uint16_t address, const uint8_t* data, size_t len){
   const uint8_t* dataToWrite = data;
   size_t lenRemaining = len;
   uint16_t nextAddress = address;
-  int totalWritten = 0;
+  size_t totalWritten = 0;
   size_t numberOfWrites = 0;
   do {
     // Since page write to the AT24Cxxx chips only works within the pages
@@ -103,14 +103,14 @@ AT24Cxxx::writeBuffer(uint16_t address, const uint8_t* data, size_t len){
   return totalWritten;
 }
 
-int
-AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
+size_t
+AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, size_t len){
   lastError = 0;
   uint8_t* dataPointer = data;
-  uint8_t lenRemaining = len;
+  size_t lenRemaining = len;
   uint16_t nextAddress = address;
-  int totalread = 0;
-  uint8_t numberOfReads = 0;
+  size_t totalread = 0;
+  size_t numberOfReads = 0;
   do {
     // Since underlying layers will limit how many bytes we can actually read
     // in one go, we will try to read as many as possible, but see from the
@@ -123,12 +123,12 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
       break;
     }
   	uint8_t readBytes = twoWire->requestFrom(i2cAddress, lenRemaining);
-  	int byteNumber;
+  	uint8_t byteNumber;
   	for(byteNumber = 0; (byteNumber < readBytes) && twoWire->available(); byteNumber++){
   		dataPointer[byteNumber] = twoWire->read();
   	}
-    totalread += byteNumber;
-    lenRemaining -= byteNumber;
+    totalread += (size_t)byteNumber;
+    lenRemaining -= (size_t)byteNumber;
     dataPointer += byteNumber;
     nextAddress += byteNumber;
   } while ((lenRemaining > 0) && (++numberOfReads < len));
