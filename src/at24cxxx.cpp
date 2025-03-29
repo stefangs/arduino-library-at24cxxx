@@ -122,7 +122,8 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, size_t len){
       // If we got a hard error from the TwoWire bus, there is no point to continue
       break;
     }
-  	uint8_t readBytes = twoWire->requestFrom(i2cAddress, lenRemaining);
+    size_t maxReadSize = min(lenRemaining, 32); // 32バイト以下に制限
+    uint8_t readBytes = twoWire->requestFrom(i2cAddress, maxReadSize);
   	uint8_t byteNumber;
   	for(byteNumber = 0; (byteNumber < readBytes) && twoWire->available(); byteNumber++){
   		dataPointer[byteNumber] = twoWire->read();
