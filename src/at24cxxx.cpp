@@ -104,13 +104,16 @@ AT24Cxxx::writeBuffer(uint16_t address, const uint8_t* data, size_t len){
 }
 
 int
-AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
+AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, size_t len){
   lastError = 0;
   uint8_t* dataPointer = data;
-  uint8_t lenRemaining = len;
+  size_t lenRemaining = len;
   uint16_t nextAddress = address;
   int totalread = 0;
   uint8_t numberOfReads = 0;
+  if (len == 0) {
+    return 0;
+  }
   do {
     // Since underlying layers will limit how many bytes we can actually read
     // in one go, we will try to read as many as possible, but see from the
@@ -122,7 +125,7 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
       // If we got a hard error from the TwoWire bus, there is no point to continue
       break;
     }
-  	uint8_t readBytes = twoWire->requestFrom(i2cAddress, lenRemaining);
+  	size_t readBytes = twoWire->requestFrom(i2cAddress, lenRemaining);
   	int byteNumber;
   	for(byteNumber = 0; (byteNumber < readBytes) && twoWire->available(); byteNumber++){
   		dataPointer[byteNumber] = twoWire->read();

@@ -22,7 +22,7 @@ class AT24Cxxx {
     void update( int idx, uint8_t val);
     uint16_t length();
     int writeBuffer(uint16_t address, const uint8_t* data, size_t len);
-    int readBuffer(uint16_t address, uint8_t* data, uint8_t len);
+    int readBuffer(uint16_t address, uint8_t* data, size_t len);
     /** 
      * Returns result from the last performed operation. 
      * The meaning of the values are:
