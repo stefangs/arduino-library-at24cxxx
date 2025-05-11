@@ -1,5 +1,5 @@
 # AT24C Two-wire Serial EEPROM Library
-This is an Arduino library for using the AT24C-series serial persistant memory chips. The libary supports the following chips:
+This is an Arduino library for using the AT24C-series serial persistant memory chips. The library supports the following chips:
 * AT24C01  - 128 bytes
 * AT24C02  - 256 bytes
 * AT24C04  - 512 bytes
