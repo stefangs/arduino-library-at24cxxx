@@ -10,8 +10,10 @@
 #include "src/at24c256.h" // trigger compilation of the source directory
 
 AT24C256 eprom(AT24C_ADDRESS_0);
+AT24C256 badEprom(AT24C_ADDRESS_7);
 
 #define NO_ERROR (0)
+#define ADDRESS_NACK (2)
 #define AT24C256_LENGTH ((uint16_t)32768)
 
 int memoryPosition = 0;
@@ -19,7 +21,7 @@ int8_t buffer[1024];
 
 // Spread out the test values a bit in memory to spread out ware
 int getNextMemoryPosition() {
-  memoryPosition += 5;
+  memoryPosition += 2;
   return memoryPosition;
 }
 
@@ -69,6 +71,18 @@ test(getLength) {
   assertEqual(eprom.length(), AT24C256_LENGTH);
 }
 
+test(badAddressErrorBusWorksAfter) {
+  int pos = getNextMemoryPosition();
+  uint8_t in = 19;
+  assertEqual(badEprom.getLastError(), NO_ERROR);
+  badEprom.write(pos, in);
+  assertEqual(badEprom.getLastError(), ADDRESS_NACK);
+  // Verify bus is still ok after error
+  eprom.write(pos, in);
+  assertEqual(eprom.getLastError(), NO_ERROR);
+}
+
+
 test(writeAndReadSmallBuffer) {
   int8_t out[15] = "Test of buffer";
   int lenw = eprom.writeBuffer(0, out, 15);
@@ -81,6 +95,13 @@ test(writeAndReadSmallBuffer) {
   assertEqual(eprom.getLastError(), NO_ERROR);
 
   assertEqual((char*)in, (char*)out);
+}
+
+test(writeBufferAtBadAddress) {
+  int8_t out[15] = "Test of buffer";
+  int lenw = badEprom.writeBuffer(0, out, 15);
+  assertEqual(lenw, 0);
+  assertEqual(badEprom.getLastError(), ADDRESS_NACK);
 }
 
 test(writeAndRead256Buffer) {
