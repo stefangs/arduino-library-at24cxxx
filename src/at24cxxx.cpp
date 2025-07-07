@@ -5,7 +5,7 @@
 #define MAX_ALLOWED_LEN_IN_REQUESTFROM (255)
 
 AT24Cxxx::AT24Cxxx(uint8_t address, TwoWire& i2c, int writeDelay, uint16_t size, uint8_t pageSize)  :
-  i2cAddress(address), size(size), twoWire(&i2c), writeDelay(writeDelay), pageSize(pageSize) {
+  i2cAddress(address), twoWire(&i2c), size(size), writeDelay(writeDelay), pageSize(pageSize) {
 }
 
 uint8_t
@@ -53,7 +53,7 @@ int
 AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   lastError = 0;
   writeAddress(address);
-  int written = 0;
+  size_t written = 0;
   for (written = 0; written < len; written++) {
     // Not using twoWire's built in buffer write since it hides errors from write.
     if (twoWire->write(data[written]) != 1) {
@@ -129,7 +129,7 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, size_t len){
     }
     size_t bytesToRead = min(lenRemaining, MAX_ALLOWED_LEN_IN_REQUESTFROM);
   	size_t readBytes = twoWire->requestFrom(i2cAddress, bytesToRead);
-  	int byteNumber;
+  	size_t byteNumber;
   	for(byteNumber = 0; (byteNumber < readBytes) && twoWire->available(); byteNumber++){
   		dataPointer[byteNumber] = twoWire->read();
   	}
