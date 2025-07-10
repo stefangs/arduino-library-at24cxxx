@@ -2,7 +2,7 @@
 #include "at24cxxx.h"
 #include "Arduino.h"
 
-#define MAX_ALLOWED_LEN_IN_REQUESTFROM (255)
+#define MAX_ALLOWED_LEN_IN_REQUESTFROM ((size_t) 255)
 
 AT24Cxxx::AT24Cxxx(uint8_t address, TwoWire& i2c, int writeDelay, uint16_t size, uint8_t pageSize)  :
   i2cAddress(address), twoWire(&i2c), size(size), writeDelay(writeDelay), pageSize(pageSize) {
